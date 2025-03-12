@@ -40,7 +40,7 @@ class DashboardController extends Controller
                 ],
                 [
                     'id' => 1002,
-                    'customer' => 'Sara Alaoui',
+                    'customer' => 'Sara ',
                     'amount' => 459.50,
                     'status' => 'processing',
                     'date' => '2025-03-11'
