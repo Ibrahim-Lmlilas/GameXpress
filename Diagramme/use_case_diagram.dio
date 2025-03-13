@@ -1,9 +1,30 @@
 <mxfile host="65bd71144e">
     <diagram id="uHaD_QlvnoDTso_zVezF" name="Page-1">
-        <mxGraphModel dx="1068" dy="757" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+        <mxGraphModel dx="1450" dy="1027" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
+                <mxCell id="5" value="GameXpress" style="shape=rect;html=1;verticalAlign=top;fontStyle=1;whiteSpace=wrap;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="330" y="70" width="470" height="540" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="Super Admin" style="shape=umlActor;html=1;verticalLabelPosition=bottom;verticalAlign=top;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="210" y="230" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="View Dashboard" style="shape=ellipse;html=1;strokeWidth=3;fontStyle=1;whiteSpace=wrap;align=center;perimeter=ellipsePerimeter;" vertex="1" parent="1">
+                    <mxGeometry x="380" y="110" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="List Products" style="shape=ellipse;html=1;strokeWidth=3;fontStyle=1;whiteSpace=wrap;align=center;perimeter=ellipsePerimeter;" vertex="1" parent="1">
+                    <mxGeometry x="380" y="190" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;CRUD&amp;nbsp;&lt;font face=&quot;Fira Code, Fira Mono, Menlo, Consolas, DejaVu Sans Mono, monospace&quot; color=&quot;#395e1e&quot;&gt;&lt;span style=&quot;font-size: 14px; font-weight: 400; letter-spacing: -0.4px; white-space: pre;&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;/font&gt;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; text-align: center; font-size: 14px; font-weight: 400; letter-spacing: -0.4px; white-space: pre;&quot;&gt;&lt;font face=&quot;Fira Code, Fira Mono, Menlo, Consolas, DejaVu Sans Mono, monospace&quot;&gt;Product&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;" style="shape=ellipse;html=1;strokeWidth=3;fontStyle=1;whiteSpace=wrap;align=center;perimeter=ellipsePerimeter;" vertex="1" parent="1">
+                    <mxGeometry x="380" y="270" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="CRUD&amp;nbsp;Categories" style="shape=ellipse;html=1;strokeWidth=3;fontStyle=1;whiteSpace=wrap;align=center;perimeter=ellipsePerimeter;" vertex="1" parent="1">
+                    <mxGeometry x="380" y="350" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="User_Management" style="shape=ellipse;html=1;strokeWidth=3;fontStyle=1;whiteSpace=wrap;align=center;perimeter=ellipsePerimeter;" vertex="1" parent="1">
+                    <mxGeometry x="380" y="430" width="120" height="60" as="geometry"/>
+                </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
