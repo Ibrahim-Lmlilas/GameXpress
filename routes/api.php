@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Admin\AuthController;
 use App\Http\Controllers\Api\V1\Admin\DashboardController;
+use App\Http\Controllers\Api\V1\Admin\ProductController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -23,8 +24,8 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/logout', [AuthController::class, 'logout']);
-            
             Route::get('/dashboard', [DashboardController::class, 'index']);
+            Route::apiResource('products', ProductController::class);
         });
     });
 });
