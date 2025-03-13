@@ -154,18 +154,18 @@ class ProductController extends Controller
         ]);
     }
 
-    private function checkLowStock(Product $product)
-    {
-        if ($product->stock <= self::LOW_STOCK) {
-            $admins = User::role(['super_admin', 'product_manager'])->get();
+    // private function checkLowStock(Product $product)
+    // {
+    //     if ($product->stock <= self::LOW_STOCK) {
+    //         $admins = User::role(['super_admin', 'product_manager'])->get();
 
-            foreach ($admins as $admin) {
-                $admin->notify(new LowStockNotification($product));
-            }
+    //         foreach ($admins as $admin) {
+    //             $admin->notify(new LowStockNotification($product));
+    //         }
 
-            return true;
-        }
+    //         return true;
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 }
