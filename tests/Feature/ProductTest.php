@@ -7,22 +7,32 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\Product;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class ProductTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker;
 
+    protected $admin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Créer les rôles nécessaires
+        Role::firstOrCreate(['name' => 'super_admin']);
+
+        // Créer un utilisateur admin pour les tests
+        $this->admin = User::factory()->create();
+        $this->admin->assignRole('super_admin');
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
     public function test_admin_can_create_and_list_product(): void
     {
-        // Create an admin user if it doesn't exist
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@gmail.com'],
-            ['name' => 'Admin', 'password' => bcrypt('password')]
-        );
-
         // Authenticate as admin
-        $this->actingAs($admin);
+        $this->actingAs($this->admin, 'sanctum');
 
         // Create a category
         $category = Category::create([
@@ -38,76 +48,84 @@ class ProductTest extends TestCase
         // Count the number of products in the database
         $productsCount = Product::count();
 
-          // Make request to fetch products
-          $response = $this->getJson('/api/v1/admin/products');
+        // Make request to fetch products
+        $response = $this->getJson('/api/v1/admin/products');
 
-          // Check the response status
-          $response->assertStatus(200);
+        // Check the response status
+        $response->assertStatus(200);
 
-          // Assert that the response contains the correct number of products
-          $response->assertJsonCount($productsCount);
+        // Assert that the response contains the correct number of products
+        $response->assertJsonCount($productsCount, 'data');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function test_admin_can_update_product(): void
+    {
+        // Authenticate as admin
+        $this->actingAs($this->admin, 'sanctum');
 
-        // public function test_admin_can_update_product(): void
-        // {
-        //     $admin = User::firstOrCreate(
-        //         ['email' => 'admin@gmail.com'],
-        //         ['name' => 'Admin', 'password' => bcrypt('password')]
-        //     );
-        //     $this->actingAs($admin);
+        // Create a category
+        $category = Category::create([
+            'name' => 'Test Category',
+            'slug' => 'test-category',
+        ]);
 
-        //     $category = Category::create([
-        //         'name' => 'Test Category',
-        //         'slug' => 'test-category',
-        //     ]);
+        // Create a product
+        $product = Product::create([
+            'name' => 'Old Product',
+            'slug' => 'old-product',
+            'price' => 49.99,
+            'stock' => 5,
+            'status' => 'available',
+            'category_id' => $category->id,
+        ]);
 
-        //     $product = Product::create([
-        //         'name' => 'Old Product',
-        //         'slug' => 'old-product',
-        //         'price' => 49.99,
-        //         'stock' => 5,
-        //         'status' => 'available',
-        //         'category_id' => $category->id,
-        //     ]);
+        // Data to update the product
+        $updatedData = [
+            'name' => 'Updated Product',
+            'price' => 59.99,
+            'stock' => 15,
+        ];
 
-        //     $updatedData = [
-        //         'name' => 'Updated Product',
-        //         'price' => 59.99,
-        //         'stock' => 15,
-        //     ];
+        // Make request to update the product
+        $response = $this->putJson("/api/v1/admin/products/{$product->id}", $updatedData);
 
-        //     $response = $this->putJson("/api/v1/admin/products/{$product->id}", $updatedData);
+        // Check the response status
+        $response->assertStatus(200);
 
-        //     $response->assertStatus(200);
-        //     $this->assertDatabaseHas('products', array_merge(['id' => $product->id], $updatedData));
-        // }
+        // Assert that the product was updated in the database
+        $this->assertDatabaseHas('products', array_merge(['id' => $product->id], $updatedData));
+    }
 
-        // public function test_admin_can_delete_product(): void
-        // {
-        //     $admin = User::firstOrCreate(
-        //         ['email' => 'admin@gmail.com'],
-        //         ['name' => 'Admin', 'password' => bcrypt('password')]
-        //     );
-        //     $this->actingAs($admin);
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function test_admin_can_delete_product(): void
+    {
+        // Authenticate as admin
+        $this->actingAs($this->admin, 'sanctum');
 
-        //     $category = Category::create([
-        //         'name' => 'Test Category',
-        //         'slug' => 'test-category',
-        //     ]);
+        // Create a category
+        $category = Category::create([
+            'name' => 'Test Category',
+            'slug' => 'test-category',
+        ]);
 
-        //     $product = Product::create([
-        //         'name' => 'Product to Delete',
-        //         'slug' => 'product-to-delete',
-        //         'price' => 39.99,
-        //         'stock' => 20,
-        //         'status' => 'available',
-        //         'category_id' => $category->id,
-        //     ]);
+        // Create a product
+        $product = Product::create([
+            'name' => 'Product to Delete',
+            'slug' => 'product-to-delete',
+            'price' => 39.99,
+            'stock' => 20,
+            'status' => 'available',
+            'category_id' => $category->id,
+        ]);
 
-        //     $response = $this->deleteJson("/api/v1/admin/products/{$product->id}");
+        // Make request to delete the product
+        $response = $this->deleteJson("/api/v1/admin/products/{$product->id}");
 
-        //     $response->assertStatus(200);
-        //     $this->assertDatabaseMissing('products', ['id' => $product->id]);
-        // }
+        // Check the response status
+        $response->assertStatus(200);
+
+        // Assert that the product was deleted from the database
+        $this->assertDatabaseMissing('products', ['id' => $product->id]);
+    }
 }
