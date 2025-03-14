@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    const LOW_STOCK = 5;
+    const LOW_STOCK_THRESHOLD = 5;
 
     public function index()
     {
@@ -67,6 +67,8 @@ class ProductController extends Controller
             $productImage->save();
         }
 
+        $this->checkLowStock($product);
+
         return response()->json([
             'message' => 'Produit créé avec succès',
             'product' => $product
@@ -75,13 +77,12 @@ class ProductController extends Controller
 
     public function update(Request $request, string $id)
     {
-        // dd($request->all());
-
         $product = Product::find($id);
         if (!$product) {
             return response()->json(['message' => 'Produit non trouvé'], 404);
         }
-        $validateur = Validator::make($request->all(), [
+
+        $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'slug' => 'sometimes|required|string|max:255',
             'price' => 'sometimes|required|numeric|min:0',
@@ -91,21 +92,19 @@ class ProductController extends Controller
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation for image
         ]);
 
-        if($validateur->fails()){
-            return response()->json(['message' => 'Validation failed', 'errors' => $validateur->errors()], 400);
-        }
-
-
+        // Mise à jour des champs du produit
         $product->name = $request->input('name', $product->name);
         $product->slug = $request->input('slug', $product->slug);
         $product->price = $request->input('price', $product->price);
         $product->stock = $request->input('stock', $product->stock);
         $product->status = $request->input('status', $product->status);
         $product->category_id = $request->input('category_id', $product->category_id);
-        $product->update($request->except('image'));
+        $product->description = $request->input('description', $product->description);
         $product->save();
 
+        // Gestion de l'image si elle est présente dans la requête
         if ($request->hasFile('image')) {
+            // Supprimer l'ancienne image si elle existe
             if ($product->images()->exists()) {
                 $oldImage = $product->images()->first();
                 if (Storage::disk('public')->exists(str_replace('/storage/', '', $oldImage->image_url))) {
@@ -114,6 +113,7 @@ class ProductController extends Controller
                 $oldImage->delete();
             }
 
+            // Stocker la nouvelle image
             $imagePath = $request->file('image')->store('public/product_images');
             $productImage = new ProductImage([
                 'product_id' => $product->id,
@@ -122,6 +122,8 @@ class ProductController extends Controller
             ]);
             $productImage->save();
         }
+
+        $this->checkLowStock($product);
 
         return response()->json([
             'message' => 'Produit mis à jour avec succès',
@@ -155,18 +157,18 @@ class ProductController extends Controller
         ]);
     }
 
-    // private function checkLowStock(Product $product)
-    // {
-    //     if ($product->stock <= self::LOW_STOCK) {
-    //         $admins = User::role(['super_admin', 'product_manager'])->get();
+    private function checkLowStock(Product $product)
+    {
+        if ($product->stock <= self::LOW_STOCK_THRESHOLD) {
+            $admins = User::role(['super_admin', 'product_manager'])->get();
 
-    //         foreach ($admins as $admin) {
-    //             $admin->notify(new LowStockNotification($product));
-    //         }
+            foreach ($admins as $admin) {
+                $admin->notify(new LowStockNotification($product));
+            }
 
-    //         return true;
-    //     }
+            return true;
+        }
 
-    //     return false;
-    // }
+        return false;
+    }
 }

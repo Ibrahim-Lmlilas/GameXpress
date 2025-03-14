@@ -14,15 +14,18 @@ class LowStockNotification extends Notification
 
     protected $product;
 
+
     public function __construct(Product $product)
     {
         $this->product = $product;
     }
 
+
     public function via($notifiable)
     {
         return ['mail'];
     }
+
 
     public function toMail($notifiable)
     {
@@ -32,5 +35,15 @@ class LowStockNotification extends Notification
             ->line('Stock actuel: ' . $this->product->stock)
             ->action('Voir le produit', url('/admin/products/' . $this->product->id))
             ->line('Merci de réapprovisionner ce produit dès que possible.');
+    }
+
+
+    public function toArray($notifiable)
+    {
+        return [
+            'product_id' => $this->product->id,
+            'product_name' => $this->product->name,
+            'stock' => $this->product->stock,
+        ];
     }
 }
