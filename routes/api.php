@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Admin\AuthController;
 use App\Http\Controllers\Api\V1\Admin\CategoryController;
 use App\Http\Controllers\Api\V1\Admin\DashboardController;
 use App\Http\Controllers\Api\V1\Admin\ProductController;
+use App\Http\Controllers\Api\V1\Admin\UserController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -28,6 +29,8 @@ Route::prefix('v1')->group(function () {
             Route::get('/dashboard', [DashboardController::class, 'index']);
             Route::apiResource('products', ProductController::class);
             Route::apiResource('categories', CategoryController::class);
+            Route::apiResource('users', UserController::class);
+
         });
     });
 });
