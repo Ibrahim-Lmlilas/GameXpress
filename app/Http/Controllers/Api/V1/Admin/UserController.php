@@ -36,7 +36,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $role = Role::findByName($request->role, 'web'); // Spécifiez le guard ici si nécessaire
+        $role = Role::findByName($request->role, 'web'); 
         $user->assignRole($role);
 
         return response()->json([
@@ -72,7 +72,7 @@ class UserController extends Controller
         $user->save();
 
         if ($request->filled('role')) {
-            $role = Role::findByName($request->role, 'web'); 
+            $role = Role::findByName($request->role, 'web');
             $user->syncRoles($role);
         }
 
